@@ -11,7 +11,8 @@ var userSchema = new mongoose.Schema({
 var postSchema = new mongoose.Schema({
     created_at: {type: Date, default: Date.now},
     created_by: String,
-    text: String
+    text: String,
+    category: String
 });
 
 userSchema.plugin(passportLocalMongoose);

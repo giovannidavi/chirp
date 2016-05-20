@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var mongoose = require('mongoose');
 var Post = mongoose.model('Post');
+var User = mongoose.model('User');
 
 //Used for routes that must be authenticated.
 function isAuthenticated (req, res, next) {
@@ -19,11 +20,12 @@ function isAuthenticated (req, res, next) {
     }
 
     // if the user is not authenticated then redirect him to the login page
-    return res.redirect('/#login');
+    return res.redirect('/#/login');
 };
 
 //Register the authentication middleware
 router.use('/posts', isAuthenticated);
+router.use('/users', isAuthenticated);
 
 router.route('/posts')
 
@@ -44,7 +46,7 @@ router.route('/posts')
         var post = new Post();
         post.text = req.body.text;
         post.created_by = req.body.created_by;
-        console.log(req.body.created_by);
+        post.category = req.body.category;
         post.save(function(err, post) {
             if (err){
                 return res.send(500, err);
@@ -91,6 +93,20 @@ router.route('/posts/:id')
                 res.send(err);
             res.json("deleted :(");
         });
+    });
+
+router.route('/users')
+
+    // return all posts
+    .get(function(req, res){
+
+        User.find(function(err, data){
+            if(err){
+                return res.send(500, err)
+            }
+            return res.send(data)
+        });
+
     });
 
 module.exports = router;

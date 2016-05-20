@@ -51,15 +51,24 @@ myApp.factory('postService', function($resource){
 	return $resource('/api/posts/:id');
 });
 
-myApp.controller('mainController', function( $scope, postService, $rootScope ){
+myApp.factory('userService', function($resource){
+	return $resource('/api/users');
+});
+
+myApp.controller('mainController', function( $scope, postService, userService, $rootScope ){
 
 	$scope.posts = postService.query();
+	$scope.users = userService.query();
+	console.log($scope.users);
 	$scope.newPost =
 	{
 		created_by : '',
 		text : '',
-		created_at : ''
+		created_at : '',
+		category: ''
 	};
+
+	$scope.categories = ['auto', 'moto'];
 
 	$scope.addPost = function() {
 		// set the value time that have not been created in yet in the dom
@@ -68,7 +77,7 @@ myApp.controller('mainController', function( $scope, postService, $rootScope ){
 		// push the post we've created to the posts array
 		postService.save($scope.newPost, function(){
 			$scope.posts = postService.query();
-			$scope.newPost = {created_by: '', text: '', created_at: ''};
+			$scope.newPost = {created_by: '', text: '', created_at: '', category: ''};
 		});
 	};
 
